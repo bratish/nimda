@@ -1,0 +1,57 @@
+/* Layout Stylesheet */
+
+
+body{
+ margin: 0px;
+ padding:0;
+ background: #808080;
+ color: #333333;
+ }
+
+#lh-col{
+ position: absolute;
+ top: 20px;
+ left: 20px;
+ width: 180px;
+ border: 2px solid #000000;
+ background: #c0c0c0;
+ color: #333333;
+ margin: 0px;
+ padding: 0px;
+ height: 400px;
+ }
+
+#rh-col{
+ margin: 20px 20px 20px 220px;
+ border: 2px solid #000000;
+ background: #ffffff;
+ color: #333333;
+ padding: 20px;
+ }
+
+/* Presentation Stylesheet */
+h4 {
+ margin:0;
+ padding: 5px 0;
+ }
+
+.oneKey {
+  padding: 5px;
+  font-size: 10pt;
+  margin: 4px;
+  position: relative;
+}
+
+.onMouseOverKey {
+  background-color: #cdeff0;
+  border: #298885 1px solid;
+}
+
+#keyListHolder {
+  height: 460px;
+  width: 420px;
+  overflow: auto;
+  background-color: #fff;
+  border: #298885 1px solid;
+  padding: 5px;
+}
