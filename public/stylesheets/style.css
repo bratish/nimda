@@ -40,6 +40,7 @@ h4 {
   font-size: 10pt;
   margin: 4px;
   position: relative;
+  border: #fff 1px solid;
 }
 
 .onMouseOverKey {
