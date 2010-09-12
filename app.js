@@ -25,7 +25,7 @@ app.configure(function(){
 });
 
 app.configure('development', function(){
-    app.use(connect.errorHandler({ dumpExceptions: true, showStack: true })); 
+    app.use(connect.errorHandler({dumpExceptions: true, showStack: true})); 
 });
 
 app.configure('production', function(){
@@ -43,6 +43,62 @@ app.get('/get-keys/:sstr', function(req, res){
   redis.keys('*' + searchStr + '*', function(err, reply){
     redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
     res.send({'searchStr': searchStr, 'keys': reply});
+  });
+});
+
+app.get('/get-key-value/:key', function(req, res){
+  var key = req.params.key;
+  sys.puts(key);
+  redis.type(key, function(err, type){
+    sys.puts(type);
+    if(type == 'string'){
+      redis.get(key, function(err, reply){
+        sys.p(reply.toString());
+        reply =
+//        redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
+        res.send({
+          'result': reply.toString(),
+          'keyType': 'string'
+        });
+      });
+    }else if(type == 'set'){
+      redis.smembers(key, function(err, reply){
+        redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
+        //          sys.p(reply);
+        res.send({
+          'result': reply,
+          'keyType': 'set'
+        });
+      });
+    } else if(type == 'zset'){
+      redis.zrange(key, 0, -1, function(err, reply){
+        //          sys.p(err);
+        redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
+        sys.p(reply);
+        res.send({
+          'result': reply,
+          'keyType': 'zset'
+        });
+      });
+    } else if(type == 'hash'){
+      redis.getall(key, function(err, reply){
+        redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
+//        sys.p(reply);
+        res.send({
+          'result': reply,
+          'keyType': 'hash'
+        });
+      });
+    } else if(type == 'list'){
+      redis.lrange(key, 0, -1, function(err, reply){
+        redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
+//        sys.p(reply);
+        res.send({
+          'result': reply,
+          'keyType': 'list'
+        });
+      });
+    }
   });
 });
 

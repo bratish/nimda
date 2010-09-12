@@ -56,3 +56,12 @@ h4 {
   border: #298885 1px solid;
   padding: 5px;
 }
+
+.keyValue {
+  background-color: #c2db56;
+  border: 1px solid #5b7a11;
+  text-align: left;
+  margin: 2px;
+  padding: 5px;
+  width: 80%;
+}
