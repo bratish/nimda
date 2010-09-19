@@ -1,5 +1,6 @@
 var Nimda = function(){
-  this.ACTIVE_ITEM = null;
+  this.LAST_ACTIVE_ITEM = null;
+  this.LAST_ACTIVE_ITEM_HTML = '';
 };
 
 
@@ -15,12 +16,14 @@ Nimda.prototype.getTheKeys = function(obj){
           for(var i=0; i < response.keys.length; i++ )
             htmlStr += "<div class='oneKey' id='keyHolder" + i.toString() + "'" +
               "onmouseover=\"$(this).addClass('onMouseOverKey')\" " +
-              "onmouseout=\"$(this).removeClass('onMouseOverKey')\""+
-              "onclick=\"nimda.getKeyValue('"+ response.keys[i] +"', this)\"> " +
+              "onmouseout=\"$(this).removeClass('onMouseOverKey')\">"+
+              "<a href='#' onclick=\"nimda.getKeyValue('"+ response.keys[i] +"', this)\"> " +
+              "<img src='images/eye.png' id='eye' /></a>" +
               response.keys[i].substring(0, response.keys[i].indexOf(response.searchStr)) +
               '<b>' + response.searchStr + '</b>' +
               response.keys[i].substring(response.keys[i].indexOf(response.searchStr) +
-              response.searchStr.length) + "</div>"
+              response.searchStr.length) + 
+              "</div>";
         $("#keyListHolder").html(htmlStr);
       }
     });
@@ -29,27 +32,56 @@ Nimda.prototype.getTheKeys = function(obj){
   }
 };
 
-Nimda.prototype.getKeyValue = function(key, obj){
+Nimda.prototype.getKeyType = function(key, obj){
   $.ajax({
-    url: 'get-key-value/' + key,
-    method: 'GET',
+    url: '/get-key-type/' + key,
+    type: "GET",
     datatype: "json",
     success: function(response){
-      var keyType = response.keyType,
-          result = response.result,
-          innerHtml = $(obj).html(),
-          i = 0;
-          
-      if(keyType == 'string'){
-        innerHtml += "<div class='keyValue'>" + result + "</div>";
-      } else {
-        innerHtml += "<div class='keyValue'><ul>";
-        for(i = 0; i < result.length; i++){
-          innerHtml += "<li>" + result[i] + "</li>";
-        }
-        innerHtml += "</ul></div>"
+      if(response.keyType && response.keyType.length > 0){
+        $(obj).html(response.keyType);
       }
-      /*
+    }
+  });
+}
+
+Nimda.prototype.getKeyValue = function(key, obj){
+  if($(nimda.LAST_ACTIVE_ITEM).attr('id') != $(obj).attr('id')){
+    $.ajax({
+      url: 'get-key-value/' + key,
+      method: 'GET',
+      datatype: "json",
+      success: function(response){
+        var keyType = response.keyType,
+            result = response.result,
+            innerHtml = $(obj).html() +
+                        "<span style='float: right'>" +
+                        keyType +
+                        "</span>" +
+                        "<div class='keyValue'>",
+            i = 0;
+
+        $(nimda.LAST_ACTIVE_ITEM).html(nimda.LAST_ACTIVE_ITEM_HTML);
+        nimda.LAST_ACTIVE_ITEM = obj;
+        nimda.LAST_ACTIVE_ITEM_HTML = $(obj).html();
+
+        if(keyType == 'string'){
+          innerHtml +=  result;
+        } else if(keyType == 'hash'){
+          innerHtml += "<ul>";
+          $.each(result, function(key, value){
+            innerHtml += "<li>" + key + " => "+ value + "</li>";
+          });
+          innerHtml += "</ul>"
+        } else {
+          innerHtml += "<ul>";
+          for(i = 0; i < result.length; i++){
+            innerHtml += "<li>" + result[i] + "</li>";
+          }
+          innerHtml += "</ul>"
+        }
+        innerHtml += "</div>";
+        /*
       else if(keyType == 'list'){
         innerHtml += "<div class='keyValue'><ul>";
         for(i = 0; i < result.length; i++){
@@ -75,9 +107,14 @@ Nimda.prototype.getKeyValue = function(key, obj){
         }
         innerHtml += "</ul></div>"
       } */
-      $(obj).html(innerHtml);
-    }
-  });
+        $(obj).html(innerHtml);
+      }
+    
+    });
+  } else {
+    $(obj).html(nimda.LAST_ACTIVE_ITEM_HTML);
+    nimda.LAST_ACTIVE_ITEM = null;
+  }
 };
 
 var nimda = new Nimda();

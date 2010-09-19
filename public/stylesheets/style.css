@@ -8,6 +8,15 @@ body{
  color: #333333;
  }
 
+ img {
+   border: 0px;
+}
+
+#eye {
+  margin: 2px;
+  padding: 2px;
+}
+
 #lh-col{
  position: absolute;
  top: 20px;
@@ -48,6 +57,14 @@ h4 {
   border: #298885 1px solid;
 }
 
+#keyInput {
+  height: 30px;
+  width: 420px;
+  border: #298885 1px solid;
+  font-size: 25px;
+  color: #534545;
+}
+
 #keyListHolder {
   height: 460px;
   width: 420px;
@@ -58,7 +75,7 @@ h4 {
 }
 
 .keyValue {
-  background-color: #c2db56;
+  background-color: #e6f69f;
   border: 1px solid #5b7a11;
   text-align: left;
   margin: 2px;

@@ -48,14 +48,9 @@ app.get('/get-keys/:sstr', function(req, res){
 
 app.get('/get-key-value/:key', function(req, res){
   var key = req.params.key;
-  sys.puts(key);
   redis.type(key, function(err, type){
-    sys.puts(type);
     if(type == 'string'){
       redis.get(key, function(err, reply){
-        sys.p(reply.toString());
-        reply =
-//        redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
         res.send({
           'result': reply.toString(),
           'keyType': 'string'
@@ -64,7 +59,6 @@ app.get('/get-key-value/:key', function(req, res){
     }else if(type == 'set'){
       redis.smembers(key, function(err, reply){
         redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
-        //          sys.p(reply);
         res.send({
           'result': reply,
           'keyType': 'set'
@@ -72,18 +66,15 @@ app.get('/get-key-value/:key', function(req, res){
       });
     } else if(type == 'zset'){
       redis.zrange(key, 0, -1, function(err, reply){
-        //          sys.p(err);
         redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
-        sys.p(reply);
         res.send({
           'result': reply,
           'keyType': 'zset'
         });
       });
     } else if(type == 'hash'){
-      redis.getall(key, function(err, reply){
+      redis.hgetall(key, function(err, reply){
         redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
-//        sys.p(reply);
         res.send({
           'result': reply,
           'keyType': 'hash'
@@ -92,7 +83,6 @@ app.get('/get-key-value/:key', function(req, res){
     } else if(type == 'list'){
       redis.lrange(key, 0, -1, function(err, reply){
         redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
-//        sys.p(reply);
         res.send({
           'result': reply,
           'keyType': 'list'
@@ -102,29 +92,16 @@ app.get('/get-key-value/:key', function(req, res){
   });
 });
 
-//app.get('/list_of/:type', function(req, res){
-//     var reqType = req.params.type,
-//         arr = new Array(),
-//         typeCalled = 0,
-//         lasti = 0;
-//
-//     redis.keys('*', function(err, reply){
-//        redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
-//        for(var i = 0; i < reply.length; i++){
-//              lasti = i;
-//              typeCalled++;
-//              redis.type(reply[i], function(err, type){
-//              if(type == reqType){
-//                 arr.push(reply[i]);
-//              }
-//          });
-//       }
-//    });
-//    sys.p(typeCalled);
-//    sys.p(lasti);
-//    if(typeCalled == lasti) res.send({'keys': arr});
-//
-//});
+app.get('/get-key-type/:key', function(req, res){
+     var reqKey = req.params.key;
+
+     redis.type(reqKey, function(err, type){
+       res.send({
+         'keyType': type
+        });
+     });
+});
+
 // Only listen on $ node app.js
 
 if (!module.parent) app.listen(3000);
