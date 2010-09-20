@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>Shell</title>
+    <script src="jquery-1.4.2.js"></script>
+  </head>
+  <body>
+    <div id="commandHolder">
+    </div>
+  </body>
+</html>
+
+<script type="text/javascript">
+
+  $(document).ready(function(){inputBox(); $("#command").focus();});
+  
+  var checkEnter = function(event){
+    var keycode = (event.keyCode ? event.keyCode : event.which),
+    command = $("#command").val();
+
+    if(keycode == '13'){
+      doWithCommand(command);
+      inputBox(command);
+    }
+  }
+
+  var inputBox = function(command){
+    if(command){
+      $("#oneCommandHolder").remove();
+      if($("#commandHolder").html().trim() != ''){
+        $("#commandHolder").append("<br />");
+      }
+      $("#commandHolder").append("Prompt >>&nbsp;" + command);
+    }
+    $("#commandHolder").append("<div id='oneCommandHolder'>Prompt >>&nbsp;<input id='command' type='text' style='border: 0px;' onkeypress='checkEnter(event)'/></div>");
+    $("#command").focus();
+  }
+  
+  var doWithCommand = function(cmd){
+    //console.log(cmd);
+  }
+</script>
