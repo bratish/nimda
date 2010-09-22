@@ -1,7 +1,24 @@
 <html>
   <head>
     <title>Shell</title>
-    <script src="jquery-1.4.2.js"></script>
+    <script src="public/javascripts/jquery-1.4.2.js"></script>
+    <script type="text/javascript">
+      $.fn.selectRange = function(start, end) {
+        return this.each(function() {
+                if(this.setSelectionRange) {
+                        this.focus();
+                        this.setSelectionRange(start, end);
+                } else if(this.createTextRange) {
+                        var range = this.createTextRange();
+                        range.collapse(true);
+                        range.moveEnd('character', end);
+                        range.moveStart('character', start);
+                        range.select();
+                }
+        });
+};
+    </script>
+
   </head>
   <body>
     <div id="commandHolder">
@@ -10,16 +27,37 @@
 </html>
 
 <script type="text/javascript">
+  var arrow = {left: 37, up: 38, right: 39, down: 40 },
+      commandList = new Array(),
+      commandListPointer = 0;
+
 
   $(document).ready(function(){inputBox(); $("#command").focus();});
   
   var checkEnter = function(event){
     var keycode = (event.keyCode ? event.keyCode : event.which),
-    command = $("#command").val();
+        command = $("#command").val();
 
     if(keycode == '13'){
-      doWithCommand(command);
+      if(command.length != 0){
+        doWithCommand(command);
+      } else {
+        $("#command").remove();
+      }
       inputBox(command);
+    } else if(keycode == arrow.up) {
+      if(commandListPointer > 0){
+        commandListPointer--;
+        $("#command").val(commandList[commandListPointer]);
+        setTimeout('$("#command").selectRange($("#command").val().length, $("#command").val().length)', 100);
+      }
+      return false;
+    } else if(keycode == arrow.down) {
+      if(commandListPointer < (commandList.length - 1)){
+        commandListPointer++;
+        $("#command").val(commandList[commandListPointer]);
+      }
+      return false;
     }
   }
 
@@ -29,13 +67,15 @@
       if($("#commandHolder").html().trim() != ''){
         $("#commandHolder").append("<br />");
       }
-      $("#commandHolder").append("Prompt >>&nbsp;" + command);
+      $("#commandHolder").append(" &gt;&gt;&nbsp;" + command);
     }
-    $("#commandHolder").append("<div id='oneCommandHolder'>Prompt >>&nbsp;<input id='command' type='text' style='border: 0px;' onkeypress='checkEnter(event)'/></div>");
+    $("#commandHolder").append("<div id='oneCommandHolder'> &gt;&gt;&nbsp;<input id='command' type='text' style='border: 0px;' onkeypress='checkEnter(event)'/></div>");
     $("#command").focus();
   }
   
   var doWithCommand = function(cmd){
+    commandList.push(cmd);
+    commandListPointer = commandList.length;
     //console.log(cmd);
   }
 </script>
