@@ -52,6 +52,18 @@ h4 {
   margin: 4px;
   position: relative;
   border: #fff 1px solid;
+  width: 100%;
+}
+
+#keyToolBox {
+  height: 40px;
+  width: 30px;
+  display: none;
+}
+
+.keyName {
+  height: 40px;
+  display: inline;
 }
 
 .onMouseOverKey {

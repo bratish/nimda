@@ -30,19 +30,21 @@ Nimda.prototype.getTheKeys = function(obj){
       type: "GET",
       dataType: "json",
       success: function(response){
-        var htmlStr = '';
+        var htmlStr = '', divId = '';
         if(response.keys && response.keys.length > 0)
-          for(var i=0; i < response.keys.length; i++ )
-            htmlStr += "<div class='oneKey' id='keyHolder" + i.toString() + "'" +
+          for(var i=0; i < response.keys.length; i++ ){
+            divId = "keyHolder" + i.toString();
+            htmlStr += "<div class='oneKey' id='" + divId + "'" +
               "onmouseover=\"$(this).addClass('onMouseOverKey')\" " +
               "onmouseout=\"$(this).removeClass('onMouseOverKey')\">"+
-              "<a href='#' onclick=\"nimda.getKeyValue('"+ response.keys[i] +"', this)\"> " +
-              "<img src='images/eye.png' id='eye' /></a>" +
+              "<img src='images/arrow_collapsed.png' id='arrow' onclick=\"nimda.getKeyValue('"+ response.keys[i] +"', '" + divId + "');\" />" +
+              "<div class='keyName'>" +
               response.keys[i].substring(0, response.keys[i].indexOf(response.searchStr)) +
               '<b>' + response.searchStr + '</b>' +
               response.keys[i].substring(response.keys[i].indexOf(response.searchStr) +
               response.searchStr.length) + 
-              "</div>";
+              "</div></div>";
+          }
         $("#keyListHolder").html(htmlStr);
       }
     });
@@ -64,7 +66,9 @@ Nimda.prototype.getKeyType = function(key, obj){
   });
 }
 
-Nimda.prototype.getKeyValue = function(key, obj){
+Nimda.prototype.getKeyValue = function(key, divId){
+  var obj = $("#" + divId);
+
   if($(nimda.LAST_ACTIVE_ITEM).attr('id') != $(obj).attr('id')){
     $.ajax({
       url: 'get-key-value/' + key,
@@ -83,6 +87,7 @@ Nimda.prototype.getKeyValue = function(key, obj){
         $(nimda.LAST_ACTIVE_ITEM).html(nimda.LAST_ACTIVE_ITEM_HTML);
         nimda.LAST_ACTIVE_ITEM = obj;
         nimda.LAST_ACTIVE_ITEM_HTML = $(obj).html();
+
 
         if(keyType == 'string'){
           innerHtml +=  result;
@@ -127,6 +132,7 @@ Nimda.prototype.getKeyValue = function(key, obj){
         innerHtml += "</ul></div>"
       } */
         $(obj).html(innerHtml);
+        $("#" + divId + " #arrow").attr('src', "images/arrow_expanded.png");
       }
     
     });
