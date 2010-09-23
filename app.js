@@ -102,6 +102,11 @@ app.get('/get-key-type/:key', function(req, res){
      });
 });
 
+app.post('/run-command', function(req, res){
+  var cmd = req.params.cmd;
+  
+});
+
 // Only listen on $ node app.js
 
 if (!module.parent) app.listen(3000);

@@ -18,7 +18,8 @@ var Nimda = function(){
   this.LAST_ACTIVE_ITEM_HTML = '';
   this.ARROW = {left: 37, up: 38, right: 39, down: 40 },
   this.COMMAND_LIST = new Array(),
-  this.COMMAND_LIST_POINTER = 0;
+  this.COMMAND_LIST_POINTER = 0,
+  this.PROMPT = 'redis&gt;&nbsp;';
 };
 
 
@@ -146,8 +147,8 @@ Nimda.prototype.checkEnter = function(event){
         nimda.inputBox(command);
       } else {
         $("#oneCommandHolder").remove();
-        $("#commandHolder").append(" &gt;&gt;&nbsp; ");
-        $("#commandHolder").append("<div id='oneCommandHolder'> &gt;&gt;&nbsp;<input id='command' type='text' style='border: 0px;' onkeypress='nimda.checkEnter(event)'/></div>");
+        $("#commandHolder").append(nimda.PROMPT);
+        $("#commandHolder").append("<div id='oneCommandHolder'>" + nimda.PROMPT + "<input id='command' type='text' style='border: 0px;' onkeypress='nimda.checkEnter(event)'/></div>");
         $("#command").focus();
       }
       return false;
@@ -155,7 +156,6 @@ Nimda.prototype.checkEnter = function(event){
       if(nimda.COMMAND_LIST_POINTER > 0){
         nimda.COMMAND_LIST_POINTER--;
         $("#command").val(nimda.COMMAND_LIST[nimda.COMMAND_LIST_POINTER]);
-//        $("#command").selectRange($("#command").val().length, $("#command").val().length);
         setTimeout('$("#command").selectRange($("#command").val().length, $("#command").val().length)', 10);
       }
       return false;
@@ -180,9 +180,9 @@ Nimda.prototype.inputBox = function(command){
       //if($("#commandHolder").html().trim() != ''){
         //$("#commandHolder").append("<br />");
       //}
-      $("#commandHolder").append(" &gt;&gt;&nbsp;" + command);
+      $("#commandHolder").append(nimda.PROMPT + command);
     }
-    $("#commandHolder").append("<div id='oneCommandHolder'> &gt;&gt;&nbsp;<input id='command' type='text' style='border: 0px;' onkeypress='nimda.checkEnter(event)'/></div>");
+    $("#commandHolder").append("<div id='oneCommandHolder'>" + nimda.PROMPT + "<input id='command' type='text' style='border: 0px;' onkeypress='nimda.checkEnter(event)'/></div>");
     $("#command").focus();
   }
 

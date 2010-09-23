@@ -102,4 +102,11 @@ h4 {
   float: left;
   margin: 5px;
   padding: 5px;
+  font-family: 'Courier New',Courier,monospace;
+  font-size: 12px;
+}
+
+#command {
+  font-family: 'Courier New',Courier,monospace;
+  font-size: 12px;
 }
