@@ -36,6 +36,8 @@ body{
  background: #ffffff;
  color: #333333;
  padding: 20px;
+ display: inline-block;
+ width: 1000px;
  }
 
 /* Presentation Stylesheet */
@@ -59,15 +61,15 @@ h4 {
 
 #keyInput {
   height: 30px;
-  width: 420px;
+  width: 95%;
   border: #298885 1px solid;
   font-size: 25px;
   color: #534545;
 }
 
 #keyListHolder {
-  height: 460px;
-  width: 420px;
+  height: 80%;
+  width: 95%;
   overflow: auto;
   background-color: #fff;
   border: #298885 1px solid;
@@ -83,6 +85,21 @@ h4 {
   width: 80%;
 }
 
+#guiHolder{
+  border: 1px solid #5b7a11;
+  display: table-cell;
+  height: 600px;
+  width: 50%;
+  float: left;
+  margin: 5px;
+  padding: 5px;
+}
 #commandLineHolder {
   border: 1px solid #5b7a11;
+  display: table-cell;
+  height: 600px;
+  width: 45%;
+  float: left;
+  margin: 5px;
+  padding: 5px;
 }

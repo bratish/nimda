@@ -1,6 +1,24 @@
+$.fn.selectRange = function(start, end) {
+  return this.each(function() {
+    if(this.setSelectionRange) {
+      this.focus();
+      this.setSelectionRange(start, end);
+    } else if(this.createTextRange) {
+      var range = this.createTextRange();
+      range.collapse(true);
+      range.moveEnd('character', end);
+      range.moveStart('character', start);
+      range.select();
+    }
+  });
+};
+
 var Nimda = function(){
   this.LAST_ACTIVE_ITEM = null;
   this.LAST_ACTIVE_ITEM_HTML = '';
+  this.ARROW = {left: 37, up: 38, right: 39, down: 40 },
+  this.COMMAND_LIST = new Array(),
+  this.COMMAND_LIST_POINTER = 0;
 };
 
 
@@ -117,4 +135,67 @@ Nimda.prototype.getKeyValue = function(key, obj){
   }
 };
 
+Nimda.prototype.checkEnter = function(event){
+    var keycode = (event.keyCode ? event.keyCode : event.which),
+        command = $("#command").val();
+
+    if(keycode == '13'){
+      $("#commandHolder").append("<br />");
+      if(command.length != 0){
+        nimda.doWithCommand(command);
+        nimda.inputBox(command);
+      } else {
+        $("#oneCommandHolder").remove();
+        $("#commandHolder").append(" &gt;&gt;&nbsp; ");
+        $("#commandHolder").append("<div id='oneCommandHolder'> &gt;&gt;&nbsp;<input id='command' type='text' style='border: 0px;' onkeypress='nimda.checkEnter(event)'/></div>");
+        $("#command").focus();
+      }
+      return false;
+    } else if(keycode == nimda.ARROW.up) {
+      if(nimda.COMMAND_LIST_POINTER > 0){
+        nimda.COMMAND_LIST_POINTER--;
+        $("#command").val(nimda.COMMAND_LIST[nimda.COMMAND_LIST_POINTER]);
+//        $("#command").selectRange($("#command").val().length, $("#command").val().length);
+        setTimeout('$("#command").selectRange($("#command").val().length, $("#command").val().length)', 10);
+      }
+      return false;
+    } else if(keycode == nimda.ARROW.down) {
+      if(nimda.COMMAND_LIST_POINTER < (nimda.COMMAND_LIST.length - 1)){
+        nimda.COMMAND_LIST_POINTER++;
+        $("#command").val(nimda.COMMAND_LIST[nimda.COMMAND_LIST_POINTER]);
+      } else {
+        $("#command").val('');
+      }
+
+      return false;
+    } else if((keycode > 47 && keycode < 58) || (keycode > 95 && keycode < 106)){
+      return false;
+    }
+    return false;
+  }
+
+Nimda.prototype.inputBox = function(command){
+    if(command){
+      $("#oneCommandHolder").remove();
+      //if($("#commandHolder").html().trim() != ''){
+        //$("#commandHolder").append("<br />");
+      //}
+      $("#commandHolder").append(" &gt;&gt;&nbsp;" + command);
+    }
+    $("#commandHolder").append("<div id='oneCommandHolder'> &gt;&gt;&nbsp;<input id='command' type='text' style='border: 0px;' onkeypress='nimda.checkEnter(event)'/></div>");
+    $("#command").focus();
+  }
+
+Nimda.prototype.doWithCommand = function(cmd){
+    nimda.COMMAND_LIST.push(cmd);
+    nimda.COMMAND_LIST_POINTER = nimda.COMMAND_LIST.length;
+    console.log(cmd);
+  }
+
+$(document).ready(function(){
+    nimda.inputBox();
+    $("#commandLineHolder").click(function(){$("#command").focus();});
+//    $("#commandLineHolder").focus(function(){$("#command").focus();});
+  });
 var nimda = new Nimda();
+
