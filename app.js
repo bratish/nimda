@@ -8,7 +8,104 @@ var express = require('express'),
     sys = require("sys"),
     redisclient = require('./deps/redis-client'),
     Buffer = require("buffer").Buffer,
-    redis = redisclient.createClient();
+    redis = redisclient.createClient(),
+    commands = [
+    "append",
+    "auth",
+    "bgsave",
+    "blpop",
+    "brpop",
+    "dbsize",
+    "decr",
+    "decrby",
+    "del",
+    "exists",
+    "expire",
+    "expireat",
+    "flushall",
+    "flushdb",
+    "get",
+    "getset",
+    "hdel",
+    "hexists",
+    "hget",
+    "hgetall",
+    "hincrby",
+    "hkeys",
+    "hlen",
+    "hmget",
+    "hmset",
+    "hset",
+    "hvals",
+    "incr",
+    "incrby",
+    "info",
+    "keys",
+    "lastsave",
+    "len",
+    "lindex",
+    "llen",
+    "lpop",
+    "lpush",
+    "lrange",
+    "lrem",
+    "lset",
+    "ltrim",
+    "mget",
+    "move",
+    "mset",
+    "msetnx",
+    "psubscribe",
+    "publish",
+    "punsubscribe",
+    "randomkey",
+    "rename",
+    "renamenx",
+    "rpop",
+    "rpoplpush",
+    "rpush",
+    "sadd",
+    "save",
+    "scard",
+    "sdiff",
+    "sdiffstore",
+    "select",
+    "set",
+    "setex",
+    "setnx",
+    "shutdown",
+    "sinter",
+    "sinterstore",
+    "sismember",
+    "smembers",
+    "smove",
+    "sort",
+    "spop",
+    "srandmember",
+    "srem",
+    "subscribe",
+    "sunion",
+    "sunionstore",
+    "ttl",
+    "type",
+    "unsubscribe",
+    "zadd",
+    "zcard",
+    "zcount",
+    "zincrby",
+    "zinter",
+    "zrange",
+    "zrangebyscore",
+    "zrank",
+    "zrem",
+    "zrembyrank",
+    "zremrangebyrank",
+    "zremrangebyscore",
+    "zrevrange",
+    "zrevrank",
+    "zscore",
+    "zunion",
+];
 
 var app = module.exports = express.createServer();
 
@@ -103,8 +200,26 @@ app.get('/get-key-type/:key', function(req, res){
 });
 
 app.post('/run-command', function(req, res){
-  var cmd = req.params.cmd;
-  
+  var commands = req.body.cmd.split('|'),
+      cmdHash = {}, i = 0, j = 0;
+
+//  sys.puts(commands.inspect());
+  for(j = 0; j < commands.length; j++){
+    var words = commands[j].split(' '),
+        cmd = words[0],
+        args = [];
+
+    for(i = 1; i < words.length; i++){
+      if(words[i].length > 0){
+        args.push(words[i]);
+      }
+    }
+    cmdHash[words[0]] = args;
+  }
+//  redis['keys']('a*', function(err, reply){
+//    redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
+    res.send({'keys': cmdHash});
+//  });
 });
 
 // Only listen on $ node app.js
