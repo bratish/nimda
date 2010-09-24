@@ -203,10 +203,8 @@ app.post('/run-command', function(req, res){
   var commands = req.body.cmd.split('|'),
       cmdHash = {}, i = 0, j = 0;
 
-//  sys.puts(commands.inspect());
   for(j = 0; j < commands.length; j++){
     var words = commands[j].split(' '),
-        cmd = words[0],
         args = [];
 
     for(i = 1; i < words.length; i++){
@@ -216,10 +214,7 @@ app.post('/run-command', function(req, res){
     }
     cmdHash[words[0]] = args;
   }
-//  redis['keys']('a*', function(err, reply){
-//    redisclient.convertMultiBulkBuffersToUTF8Strings(reply);
     res.send({'keys': cmdHash});
-//  });
 });
 
 // Only listen on $ node app.js
