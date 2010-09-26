@@ -199,23 +199,29 @@ app.get('/get-key-type/:key', function(req, res){
      });
 });
 
-app.post('/run-command', function(req, res){
-  var commands = req.body.cmd.split('|'),
-      cmdHash = {}, i = 0, j = 0;
-
-  for(j = 0; j < commands.length; j++){
-    var words = commands[j].split(' '),
-        args = [];
-
-    for(i = 1; i < words.length; i++){
-      if(words[i].length > 0){
-        args.push(words[i]);
-      }
-    }
-    cmdHash[words[0]] = args;
-  }
-    res.send({'keys': cmdHash});
-});
+//app.post('/run-command', function(req, res){
+//  var commands = req.body.cmd.split('|'),
+//      cmdHash = {}, i = 0, j = 0,
+//      lastOutput = null;
+//
+//  for(j = 0; j < commands.length; j++){
+//    var words = commands[j].split(' '),
+//        args = [];
+//
+//    for(i = 1; i < words.length; i++){
+//      if(words[i].length > 0){
+//        args.push(words[i]);
+//      }
+//    }
+//    cmdHash[words[0]] = args;
+//  }
+//
+//  for(var key in cmdHash){
+//
+//  }
+//
+////    res.send({'keys': cmdHash});
+//});
 
 // Only listen on $ node app.js
 

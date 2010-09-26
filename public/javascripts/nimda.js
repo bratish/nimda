@@ -1,25 +1,5 @@
-$.fn.selectRange = function(start, end) {
-  return this.each(function() {
-    if(this.setSelectionRange) {
-      this.focus();
-      this.setSelectionRange(start, end);
-    } else if(this.createTextRange) {
-      var range = this.createTextRange();
-      range.collapse(true);
-      range.moveEnd('character', end);
-      range.moveStart('character', start);
-      range.select();
-    }
-  });
-};
-
 var Nimda = function(){
-  this.LAST_ACTIVE_ITEM = null;
-  this.LAST_ACTIVE_ITEM_HTML = '';
-  this.ARROW = {left: 37, up: 38, right: 39, down: 40 },
-  this.COMMAND_LIST = new Array(),
-  this.COMMAND_LIST_POINTER = 0,
-  this.PROMPT = 'redis&gt;&nbsp;';
+  this.EDIT_KEY = '';
 };
 
 
@@ -43,7 +23,12 @@ Nimda.prototype.getTheKeys = function(obj){
               '<b>' + response.searchStr + '</b>' +
               response.keys[i].substring(response.keys[i].indexOf(response.searchStr) +
               response.searchStr.length) + 
-              "</div></div>";
+              "</div>" +
+              "<div class='actions'>" +
+              "<img src='images/database_edit.png' id='arrow' onclick=\"nimda.editKey('"+ response.keys[i] +"', '" + divId + "');\" />" +
+              "<img src='images/database_delete.png' id='arrow' onclick=\"nimda.deleteKey('"+ response.keys[i] +"', '" + divId + "');\" />" +
+              "</div>" +
+              "</div>";
           }
         $("#keyListHolder").html(htmlStr);
       }
@@ -52,6 +37,19 @@ Nimda.prototype.getTheKeys = function(obj){
     $("#keyListHolder").html('');
   }
 };
+
+Nimda.prototype.editKey = function(key, divId) {
+  nimda.EDIT_KEY = key;
+  $("#" + divId + " .keyName").html("<input type='text' value='" + key + "' id='editKey' /><input type='button' value='Go' onclick=\"nimda.renameKey('" + key + "', '" + divId + "');\"><input type='button' value='Cancel' onclick=\"$('#" + divId + " .keyName').html('" + key + "');\"> ");
+}
+
+Nimda.prototype.renameKey = function(key, divId){
+//  alert($("#" + divId + " #keyName").html(key));
+}
+
+Nimda.prototype.deleteKey = function(key, divId){
+  
+}
 
 Nimda.prototype.getKeyType = function(key, obj){
   $.ajax({
@@ -138,70 +136,18 @@ Nimda.prototype.getKeyValue = function(key, divId){
     });
   } else {
     $(obj).html(nimda.LAST_ACTIVE_ITEM_HTML);
+//    $("#" + divId + " .keyValue").remove();
+//    $("#" + divId + " #arrow").attr('src', "images/arrow_collapsed.png");
+//    $("#" + divId + " #arrow").attr('onclick', "nimda.getKeyValue('"+ key +"', '" + divId + "');");
     nimda.LAST_ACTIVE_ITEM = null;
   }
 };
 
-Nimda.prototype.checkEnter = function(event){
-    var keycode = (event.keyCode ? event.keyCode : event.which),
-        command = $("#command").val();
 
-    if(keycode == '13'){
-      $("#commandHolder").append("<br />");
-      if(command.length != 0){
-        nimda.doWithCommand(command);
-        nimda.inputBox(command);
-      } else {
-        $("#oneCommandHolder").remove();
-        $("#commandHolder").append(nimda.PROMPT);
-        $("#commandHolder").append("<div id='oneCommandHolder'>" + nimda.PROMPT + "<input id='command' type='text' style='border: 0px;' onkeypress='nimda.checkEnter(event)'/></div>");
-        $("#command").focus();
-      }
-      return false;
-    } else if(keycode == nimda.ARROW.up) {
-      if(nimda.COMMAND_LIST_POINTER > 0){
-        nimda.COMMAND_LIST_POINTER--;
-        $("#command").val(nimda.COMMAND_LIST[nimda.COMMAND_LIST_POINTER]);
-        setTimeout('$("#command").selectRange($("#command").val().length, $("#command").val().length)', 10);
-      }
-      return false;
-    } else if(keycode == nimda.ARROW.down) {
-      if(nimda.COMMAND_LIST_POINTER < (nimda.COMMAND_LIST.length - 1)){
-        nimda.COMMAND_LIST_POINTER++;
-        $("#command").val(nimda.COMMAND_LIST[nimda.COMMAND_LIST_POINTER]);
-      } else {
-        $("#command").val('');
-      }
-
-      return false;
-    } else if((keycode > 47 && keycode < 58) || (keycode > 95 && keycode < 106)){
-      return false;
-    }
-    return false;
-  }
-
-Nimda.prototype.inputBox = function(command){
-    if(command){
-      $("#oneCommandHolder").remove();
-      //if($("#commandHolder").html().trim() != ''){
-        //$("#commandHolder").append("<br />");
-      //}
-      $("#commandHolder").append(nimda.PROMPT + command);
-    }
-    $("#commandHolder").append("<div id='oneCommandHolder'>" + nimda.PROMPT + "<input id='command' type='text' style='border: 0px;' onkeypress='nimda.checkEnter(event)'/></div>");
-    $("#command").focus();
-  }
-
-Nimda.prototype.doWithCommand = function(cmd){
-    nimda.COMMAND_LIST.push(cmd);
-    nimda.COMMAND_LIST_POINTER = nimda.COMMAND_LIST.length;
-    console.log(cmd);
-  }
 
 $(document).ready(function(){
-    nimda.inputBox();
-    $("#commandLineHolder").click(function(){$("#command").focus();});
-//    $("#commandLineHolder").focus(function(){$("#command").focus();});
+    $("#keyInput").focus();
   });
+  
 var nimda = new Nimda();
 
