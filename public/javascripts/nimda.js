@@ -48,7 +48,16 @@ Nimda.prototype.renameKey = function(key, divId){
 }
 
 Nimda.prototype.deleteKey = function(key, divId){
-  
+  $.ajax({
+    url: '/delete/' + key,
+    type: 'GET',
+    datatype: 'json',
+    success: function(response){
+      if(response.deleted){
+        $('#' + divId).remove();
+      }
+    }
+  });
 }
 
 Nimda.prototype.getKeyType = function(key, obj){

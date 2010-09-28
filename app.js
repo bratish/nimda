@@ -199,6 +199,16 @@ app.get('/get-key-type/:key', function(req, res){
      });
 });
 
+app.get('/delete/:key', function(req, res){
+  var reqKey = req.params.key;
+
+     redis.del(reqKey, function(err, deleted){
+       res.send({
+         'deleted': deleted
+        });
+     });
+});
+
 //app.post('/run-command', function(req, res){
 //  var commands = req.body.cmd.split('|'),
 //      cmdHash = {}, i = 0, j = 0,
