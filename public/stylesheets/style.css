@@ -10,6 +10,7 @@ body{
 
  img {
    border: 0px;
+   display: none;
 }
 
 #eye {
@@ -71,6 +72,11 @@ h4 {
   border: #298885 1px solid;
 }
 
+.onMouseOverKey img {
+  display: block;
+  float: left;
+}
+
 #keyInput {
   height: 30px;
   width: 95%;
@@ -108,6 +114,6 @@ h4 {
 
 .actions {
   float: right;
-  border: 1px solid #5b7a11;
+/*  border: 1px solid #5b7a11;*/
   padding: 2px;
 }

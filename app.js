@@ -209,6 +209,17 @@ app.get('/delete/:key', function(req, res){
      });
 });
 
+app.get('/rename/:oldKeyName/:newKeyName', function(req, res){
+  var oldKeyName = req.params.oldKeyName,
+      newKeyName = req.params.newKeyName;
+
+     redis.rename(oldKeyName, newKeyName, function(err, deleted){
+       res.send({
+         'renamedKey': newKeyName
+        });
+     });
+});
+
 //app.post('/run-command', function(req, res){
 //  var commands = req.body.cmd.split('|'),
 //      cmdHash = {}, i = 0, j = 0,

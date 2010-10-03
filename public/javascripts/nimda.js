@@ -1,5 +1,4 @@
 var Nimda = function(){
-  this.EDIT_KEY = '';
 };
 
 
@@ -25,8 +24,8 @@ Nimda.prototype.getTheKeys = function(obj){
               response.searchStr.length) + 
               "</div>" +
               "<div class='actions'>" +
-              "<img src='images/database_edit.png' id='arrow' onclick=\"nimda.editKey('"+ response.keys[i] +"', '" + divId + "');\" />" +
-              "<img src='images/database_delete.png' id='arrow' onclick=\"nimda.deleteKey('"+ response.keys[i] +"', '" + divId + "');\" />" +
+              "<img src='images/database_edit.png' onclick=\"nimda.editKey('"+ response.keys[i] +"', '" + divId + "');\" title=\"Edit this key\"/>" +
+              "<img src='images/database_delete.png' onclick=\"nimda.deleteKey('"+ response.keys[i] +"', '" + divId + "');\" title=\"Delete this key\"/>" +
               "</div>" +
               "</div>";
           }
@@ -38,13 +37,33 @@ Nimda.prototype.getTheKeys = function(obj){
   }
 };
 
+Nimda.prototype.onMouseOverActivities = function(obj){
+  $(obj).addClass('onMouseOverKey');
+  $(obj).find('IMG').css('display', 'block');
+}
+
+Nimda.prototype.onMouseOutActivities = function(obj){
+  $(obj).removeClass('onMouseOverKey');
+  $(obj).find('IMG').css('display', 'none');
+}
+
+
 Nimda.prototype.editKey = function(key, divId) {
-  nimda.EDIT_KEY = key;
   $("#" + divId + " .keyName").html("<input type='text' value='" + key + "' id='editKey' /><input type='button' value='Go' onclick=\"nimda.renameKey('" + key + "', '" + divId + "');\"><input type='button' value='Cancel' onclick=\"$('#" + divId + " .keyName').html('" + key + "');\"> ");
 }
 
 Nimda.prototype.renameKey = function(key, divId){
-//  alert($("#" + divId + " #keyName").html(key));
+  var newKey = $("#" + divId + " #editKey").val();
+  $.ajax({
+    url: '/rename/' + key + "/" + newKey,
+    type: 'GET',
+    datatype: 'json',
+    success: function(response){
+      if(response.renamedKey){
+        $('#' + divId + " .keyName").html(response.renamedKey);
+      }
+    }
+  });
 }
 
 Nimda.prototype.deleteKey = function(key, divId){
